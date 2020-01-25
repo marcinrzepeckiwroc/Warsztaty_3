@@ -1,4 +1,4 @@
-package com.rzepecki;
+package com.rzepecki.dao;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
