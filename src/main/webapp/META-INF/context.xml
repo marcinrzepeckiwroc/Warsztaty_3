@@ -6,8 +6,8 @@
               username="root"
               password="Nokia2020lte"
               driverClassName="com.mysql.jdbc.Driver"
-              connectionProperties="useUnicode=yes;characterEncoding=utf8;useSSL=false"
-              url="jdbc:mysql://localhost:3306/school"
+              connectionProperties="useUnicode=yes;characterEncoding=utf8;useSSL=false;serverTimezone=Europe/Warsaw"
+              url="jdbc:mysql://127.0.0.1:3306/jdbc_test"
               maxTotal="100"
               maxIdle="30"
               maxWaitMillis="10000" />

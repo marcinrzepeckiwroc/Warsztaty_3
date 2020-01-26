@@ -15,6 +15,8 @@ public class SolutionDAO {
     private static final String FIND_ALLBYUSER_SOLUTION_QUERY = "SELECT * FROM solution where users_id= ?";
     private static final String FIND_ALLBYEXERCISE_SOLUTION_QUERY = "SELECT * FROM solution where exercise_id= ?";
     private static final String FIND_EXERCISE_WITHOUT_SOLUTION_QUERY = "SELECT * FROM exercise JOIN solution s on exercise.id = s.exercise_id WHERE s.description is null and s.users_id = ?";
+    private static final String FIND_RECENT_SOLUTION_QUERY = "SELECT * FROM solution ORDER BY created DESC LIMIT ?";
+    private static final String FIND_BYID_SOLUTION_QUERY = "SELECT * FROM solution where id=?";
 
 
     public Solution create(Solution solution) {
@@ -184,6 +186,60 @@ public class SolutionDAO {
                 exerciseList.add(exercise);
             }
             return exerciseList;
+        } catch (SQLException e) {
+            e.printStackTrace(); return null;
+        }
+    }
+
+    public ArrayList<Solution> findRecent(int num){
+        try (Connection conn = DbUtil.getConnection()) {
+            PreparedStatement statement =
+                    conn.prepareStatement(FIND_RECENT_SOLUTION_QUERY);
+            statement.setInt(1, num);
+            ArrayList<Solution> solutionsList = new ArrayList<>();
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                Solution solution = new Solution();
+                solution.setId(resultSet.getInt("id"));
+                solution.setCreated(resultSet.getTimestamp("created").toLocalDateTime());
+                try{
+                    solution.setUpdated(resultSet.getTimestamp("updated").toLocalDateTime());
+                }catch (NullPointerException e){
+
+                }
+                solution.setDescription(resultSet.getString("description"));
+                solution.setExercise_id(resultSet.getInt("exercise_id"));
+                solution.setUsers_id(resultSet.getInt("users_id"));
+                solutionsList.add(solution);
+            }
+            return solutionsList;
+        } catch (SQLException e) {
+            e.printStackTrace(); return null;
+        }
+    }
+
+    public Solution findById(int num){
+        try (Connection conn = DbUtil.getConnection()) {
+            PreparedStatement statement =
+                    conn.prepareStatement(FIND_BYID_SOLUTION_QUERY);
+            statement.setInt(1, num);
+
+            ResultSet resultSet = statement.executeQuery();
+
+            Solution solution = new Solution();
+            solution.setId(resultSet.getInt("id"));
+            solution.setCreated(resultSet.getTimestamp("created").toLocalDateTime());
+            try{
+                solution.setUpdated(resultSet.getTimestamp("updated").toLocalDateTime());
+            }catch (NullPointerException e){
+
+            }
+            solution.setDescription(resultSet.getString("description"));
+            solution.setExercise_id(resultSet.getInt("exercise_id"));
+            solution.setUsers_id(resultSet.getInt("users_id"));
+
+
+            return solution;
         } catch (SQLException e) {
             e.printStackTrace(); return null;
         }
